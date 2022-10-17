@@ -31,6 +31,14 @@ if (substr($query_string, 0, 5)=='tag::') {
 	$_REQUEST['search_module'] = 'All';
 	unset($_REQUEST['search_onlyin']);
 }
+
+if (substr($query_string, 0, 5)=='#::') {
+	$query_string = substr($query_string, 5);
+	$_REQUEST['search_tag'] = 'tag_search';
+	$_REQUEST['search_module'] = 'All';
+	unset($_REQUEST['search_onlyin']);
+}
+
 $fieldtype = '';
 if (strpos($query_string, '::')) {
 	$resttype = substr($query_string, 0, strpos($query_string, '::'));
