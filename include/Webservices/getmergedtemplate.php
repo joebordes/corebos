@@ -33,8 +33,8 @@ function cbws_getmergedtemplate($template, $crmids, $output_format, $user) {
 		array($template, $template)
 	);
 	if ($orgfile && $adb->num_rows($orgfile) > 0) {
-		$mergeTemplatePath=$adb->query_result($orgfile, 0, 'filepath');
-		$module = $adb->query_result($orgfile, 0, 'template_for');
+		$mergeTemplatePath = decode_html($orgfile->fields['filepath']);
+		$module = $orgfile->fields['template_for'];
 		$zipname = OpenDocument::GENDOCCACHE . '/' . $module . '/gendoc' . $user->id . '.zip';
 		if (file_exists($zipname)) {
 			unlink($zipname);
@@ -105,12 +105,14 @@ function cbws_getmergedtemplate($template, $crmids, $output_format, $user) {
 				$zipfname = 'odtout'.$record;
 				if ($output_format=='pdf') {
 					$odtout->convert($filename, $pdfname);
-					$zip->addFile($pdfname, $zipfname.'pdf');
-				} elseif ($output_format=='onepdf' || $output_format=='oneodt') {
+					$zip->addFile($pdfname, $zipfname.'.pdf');
+				} elseif ($output_format=='onepdf') {
 					$odtout->convert($filename, $pdfname);
 					$file2merge[] = $pdfname;
+				} elseif ($output_format=='oneodt') {
+					$file2merge[] = $filename;
 				} else {
-					$zip->addFile($filename, $zipfname.'odt');
+					$zip->addFile($filename, $zipfname.'.odt');
 				}
 			}
 		}
